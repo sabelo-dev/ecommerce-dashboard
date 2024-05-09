@@ -103,16 +103,16 @@ export async function GET(
       where: {
         storeId: params.storeId,
         categoryId,
-        colorId,
-        sizeId,
+        colors: {some: { id: colorId }},
+        sizes: {some: { id: sizeId }},
         isFeatured: isFeatured ? true : undefined,
-        isArchieved: false
+        isArchived: false
       },
       include: {
         images: true,
         category: true,
-        color: true,
-        size: true
+        colors: true,
+        sizes: true
       },
       orderBy: {
         createdAt: "desc"
