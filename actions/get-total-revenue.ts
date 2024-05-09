@@ -1,6 +1,20 @@
 import prismadb from "@/lib/prismadb";
 
-export const getTotalRevenue = async (storeId: string) => {
+interface Product {
+    price: {
+        toNumber(): number;
+    };
+}
+
+interface OrderItem {
+    product: Product;
+}
+
+interface Order {
+    orderItems: OrderItem[];
+}
+
+export const getTotalRevenue = async (storeId: string): Promise<number> => {
     const paidOrders = await prismadb.order.findMany({
         where: {
             storeId,
@@ -15,7 +29,7 @@ export const getTotalRevenue = async (storeId: string) => {
         }
     });
 
-    const totalRevenue = paidOrders.reduce((total: number, order) => {
+    const totalRevenue = paidOrders.reduce((total: number, order: Order) => {
         const orderTotal = order.orderItems.reduce((orderSum, item) => {
             return orderSum + item.product.price.toNumber();
         }, 0);
